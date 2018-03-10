@@ -2,7 +2,7 @@
   <div class="index">
     <header></header>
     <main>
-        <baidu-map class="bm-view"></baidu-map>
+        <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler"></baidu-map>
     </main>
     <footer></footer>
   </div>
@@ -10,7 +10,21 @@
 
 <script>
 export default {
-  name: 'index'
+  name: 'index',
+  data () {
+    return {
+      center: {lng: 0, lat: 0},
+      zoom: 3
+    }
+  },
+  methods: {
+    handler ({BMap, map}) {
+      console.log(BMap, map)
+      this.center.lng = 116.404
+      this.center.lat = 39.915
+      this.zoom = 15
+    }
+  }
 }
 </script>
 

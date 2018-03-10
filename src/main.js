@@ -6,12 +6,15 @@ import 'element-ui/lib/theme-chalk/index.css'
 import App from './App'
 import router from './router'
 import BaiduMap from 'vue-baidu-map'
+import 'vue-awesome/icons'
+import Icon from 'vue-awesome/components/Icon'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(BaiduMap, {
-  ak: 'YXsiVTqLanfeUoKuwI7EZrTAmk3h2QB7'
+  ak: 'ovSXZ5CIXP6g34ai930s0u4GiIabHZ6h'
 })
+Vue.component('icon', Icon)
 
 /* eslint-disable no-new */
 new Vue({
