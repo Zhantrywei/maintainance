@@ -4,6 +4,7 @@ import Login from '@/views/login'
 import Register from '@/views/register'
 import Forget from '@/views/forget'
 import Index from '@/views/index'
+import System from '@/views/system'
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -31,6 +32,11 @@ export default new Router({
       path: '/index',
       name: 'index',
       component: Index
+    },
+    {
+      path: '/system',
+      name: 'system',
+      component: System
     }
   ]
 })

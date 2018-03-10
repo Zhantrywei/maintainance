@@ -1,6 +1,8 @@
 <template>
   <div class="index">
-      首页
+    <header></header>
+    <main></main>
+    <footer></footer>
   </div>
 </template>
 
