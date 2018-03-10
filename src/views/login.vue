@@ -20,11 +20,11 @@
         <el-col :xs="24"><input type="password" placeholder="密码" autofocus></el-col>
       </el-row>
       <el-row>
-        <el-col :xs="24"><button>登 录</button></el-col>
+        <el-col :xs="24"><button @click="login">登 录</button></el-col>
       </el-row>
       <el-row :gutter="10">
-        <el-col :xs="12"><router-link to="">忘记密码?</router-link></el-col>
-        <el-col :xs="12" class="text-right"><router-link to="">新用户注册</router-link></el-col>
+        <el-col :xs="12"><router-link :to="{name: 'forget'}">忘记密码?</router-link></el-col>
+        <el-col :xs="12" class="text-right"><router-link :to="{name: 'register'}">新用户注册</router-link></el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -32,7 +32,12 @@
 
 <script>
 export default {
-  name: 'login'
+  name: 'login',
+  methods: {
+    login: function () {
+      this.$router.push({name: 'index'})
+    }
+  }
 }
 </script>
 

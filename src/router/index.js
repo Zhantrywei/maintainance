@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/views/login'
 import Register from '@/views/register'
+import Forget from '@/views/forget'
+import Index from '@/views/index'
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -19,6 +21,16 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/forget',
+      name: 'forget',
+      component: Forget
+    },
+    {
+      path: '/index',
+      name: 'index',
+      component: Index
     }
   ]
 })
