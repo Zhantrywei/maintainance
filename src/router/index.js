@@ -5,6 +5,11 @@ import Register from '@/views/register'
 import Forget from '@/views/forget'
 import Index from '@/views/index'
 import System from '@/views/system'
+import Apply from '@/components/apply'
+import Repair from '@/components/repair'
+import Share from '@/components/share'
+import Me from '@/views/me'
+import Commenting from '@/views/commenting'
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -31,12 +36,40 @@ export default new Router({
     {
       path: '/index',
       name: 'index',
-      component: Index
+      component: Index,
+      redirect: '/index/repair',
+      children: [
+        {
+          name: 'repair',
+          path: 'repair',
+          component: Repair
+        },
+        {
+          name: 'apply',
+          path: 'apply',
+          component: Apply
+        },
+        {
+          name: 'share',
+          path: 'share',
+          component: Share
+        }
+      ]
     },
     {
       path: '/system',
       name: 'system',
       component: System
+    },
+    {
+      path: '/me',
+      name: 'me',
+      component: Me
+    },
+    {
+      path: '/commenting',
+      name: 'commenting',
+      component: Commenting
     }
   ]
 })
