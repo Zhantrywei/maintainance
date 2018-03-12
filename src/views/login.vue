@@ -41,8 +41,8 @@ export default {
   name: 'login',
   methods: {
     login: function () {
-      this.$router.push({name: 'index'})
-      // this.$router.push({name: 'system'})
+      // this.$router.push({name: 'index'})
+      this.$router.push({name: 'system'})
     }
   }
 }
