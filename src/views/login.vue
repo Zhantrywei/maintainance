@@ -1,40 +1,100 @@
 <template>
-  <div class="login">
-    <header class="login-header">
-      <h1>Maintance</h1>
-      <h2 class="text-right">很高兴为你服务</h2>
-    </header>
-    <el-main class="form">
-      <el-row>
-        <el-col :xs="24"><input type="text" placeholder="学号" autofocus></el-col>
-      </el-row>
-      <el-row>
-        <el-col :xs="24"><input type="password" placeholder="密码" autofocus></el-col>
-      </el-row>
-      <el-row>
-        <el-col :xs="24">
-          <button @click="login">登 录</button>
-        </el-col>
-      </el-row>
-      <el-row :gutter="10">
-        <el-col :span="12">
-          <router-link :to="{name: 'forget'}">忘记密码?</router-link>
-        </el-col>
-        <el-col :span="12" class="text-right">
-          <router-link :to="{name: 'register'}">新用户注册</router-link>
-        </el-col>
-      </el-row>
-    </el-main>
-  </div>
+    <div class="login">
+        <header class="login-header">
+            <h1>Maintance</h1>
+            <h2 class="text-right">很高兴为你服务</h2>
+        </header>
+        <el-main class="form">
+            <el-row>
+                <el-col :xs="24"><input type="text" placeholder="学号" autofocus v-model="stuId"></el-col>
+                <div v-show="showTip" class="tip text-right">请正确输入学号</div>
+                <div v-show="showStuIdTip" class="tip text-right">请输入学号</div>
+            </el-row>
+            <el-row>
+                <el-col :xs="24"><input type="password" placeholder="密码" autofocus v-model="pwd"></el-col>
+                <div v-show="showPwdTip" class="tip text-right">请输入密码</div>                
+            </el-row>
+            <el-row>
+                <el-col :xs="24">
+                    <button @click="login">登 录</button>
+                </el-col>
+            </el-row>
+            <el-row :gutter="10">
+                <el-col :span="12">
+                    <router-link :to="{name: 'forget'}">忘记密码?</router-link>
+                </el-col>
+                <el-col :span="12" class="text-right">
+                    <router-link :to="{name: 'register'}">新用户注册</router-link>
+                </el-col>
+            </el-row>
+        </el-main>
+    </div>
 </template>
 
 <script>
 export default {
     name: "login",
+    data() {
+        return {
+            stuId: '',
+            pwd: '',
+            showTip: false,
+            showStuIdTip: false,
+            showPwdTip: false
+        };
+    },
+    watch: {
+        stuId: function(val){
+            if(val.indexOf(".")!=-1){
+                this.showTip = true;
+            }else{                
+                var val = Number(val);
+                if(isNaN(val)){
+                    // console.log(val);
+                    this.showTip = true;
+                }else{
+                    console.log("val: ",val);
+                }
+            }
+            if(val == ''){
+                this.showTip = false;
+            }else{
+                this.showStuIdTip = false;
+            }
+        },
+        pwd: function(val){
+            if(val!=''){
+                this.showPwdTip = false;
+            }
+        }
+    },
     methods: {
         login: function() {
             // this.$router.push({name: 'index'})
-            this.$router.push({ name: "system" });
+            // this.$router.push({ name: "system" });
+            if(this.stuId == ''){
+                this.showStuIdTip = true;
+            }
+            if(this.pwd == ''){
+                this.showPwdTip = true;
+                return false;
+            }
+            console.log("学号: ", this.stuId);
+            console.log("密码: ", this.pwd);
+            this.$http.post('/api/user', {
+                stuId: this.stuId,
+                pwd: this.pwd
+            }).then(function(res){
+                console.log("res: ",res);
+            }).catch(function(err){
+                console.log("err: ",err);
+            })
+            // this.$http.get('/api/user').then(function(res){
+            //     console.log("res: ",res);
+            // }).catch(function(err){
+            //     console.log("err: ",err);
+            // })
+            
         }
     }
 };
@@ -51,6 +111,7 @@ export default {
     background-size: contain;
 }
 .form input {
+    position: relative;
     width: 100%;
     /* height: 30px; */
     height: 1.5rem;
@@ -72,6 +133,13 @@ export default {
 .text-right {
     text-align: right;
 }
+.tip {
+    position: absolute;
+    top: 0rem;
+    right: 0;
+    color: #B54143;
+}
+
 
 @media screen and (min-width: 800px) {
     .login {
@@ -82,9 +150,9 @@ export default {
         font-size: 16px;
     }
     .login-header {
-        width: 30%;
+        width: 50%;
         height: 1.5rem;
-        font-size: 16px;
+        font-size: 30px;
         padding: 20px;
     }
     .form {
@@ -92,28 +160,33 @@ export default {
         top: 30%;
         right: 20px;
         width: 50%;
-        height: 40%;
     }
 
     .form input {
         width: 100%;
         /* height: 30px; */
-        height: 1rem;
+        height: 0.8rem;
         box-sizing: border-box;
         border-bottom: lightgray 1px solid;
-        padding: 0 0.5rem;
+        padding: 0 0.2rem;
         border-radius: 0.2rem;
         /* margin-bottom: 10px; */
-        margin-bottom: 0.5rem;
+        /* margin-bottom: 0.5rem; */
     }
 
     .form button {
         width: 100%;
         /* height: 30px; */
-        height: 1rem;
+        height: 0.8rem;
         border-radius: 4px;
         margin-bottom: 0.5rem;
         outline: none;
+    }
+    .tip {
+        font-size: 20px;
+        position: absolute;
+        right: 0;
+        top: 0.8rem;
     }
 }
 
@@ -128,6 +201,15 @@ export default {
     .login-header {
         padding: 15rem 1rem 0 1rem;
         height: 3rem;
+    }
+    .form input {
+        margin-bottom: 1rem;
+    }
+    .tip {
+        font-size: 20px;
+        position: absolute;
+        right: 0;
+        top: 1.6rem;
     }
 }
 
@@ -145,6 +227,15 @@ export default {
     }
     .form {
         margin-top: 0.5rem;
+    }
+    .form input {
+        margin-bottom: 1rem;
+    }
+    .tip {
+        font-size: 16px;
+        position: absolute;
+        right: 0;
+        top: 1.6rem;
     }
 }
 </style>

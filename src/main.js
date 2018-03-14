@@ -8,6 +8,9 @@ import router from './router'
 import BaiduMap from 'vue-baidu-map'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
+import axios from 'axios'
+
+Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
