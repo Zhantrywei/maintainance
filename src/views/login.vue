@@ -12,7 +12,7 @@
             </el-row>
             <el-row>
                 <el-col :xs="24"><input type="password" placeholder="密码" autofocus v-model="pwd"></el-col>
-                <div v-show="showPwdTip" class="tip text-right">请输入密码</div>                
+                <div v-show="showPwdTip" class="tip text-right">请输入密码</div>
             </el-row>
             <el-row>
                 <el-col :xs="24">
@@ -20,10 +20,10 @@
                 </el-col>
             </el-row>
             <el-row :gutter="10">
-                <el-col :span="12">
+                <!-- <el-col :span="12">
                     <router-link :to="{name: 'forget'}">忘记密码?</router-link>
-                </el-col>
-                <el-col :span="12" class="text-right">
+                </el-col> -->
+                <el-col :span="24" class="text-right">
                     <router-link :to="{name: 'register'}">新用户注册</router-link>
                 </el-col>
             </el-row>
@@ -36,65 +36,72 @@ export default {
     name: "login",
     data() {
         return {
-            stuId: '',
-            pwd: '',
+            stuId: "",
+            pwd: "",
             showTip: false,
             showStuIdTip: false,
             showPwdTip: false
         };
     },
     watch: {
-        stuId: function(val){
-            if(val.indexOf(".")!=-1){
+        stuId: function(val) {
+            if (val.indexOf(".") != -1) {
                 this.showTip = true;
-            }else{                
+            } else {
                 var val = Number(val);
-                if(isNaN(val)){
+                if (isNaN(val)) {
                     // console.log(val);
                     this.showTip = true;
-                }else{
-                    console.log("val: ",val);
+                } else {
+                    console.log("val: ", val);
                 }
             }
-            if(val == ''){
+            if (val == "") {
                 this.showTip = false;
-            }else{
+            } else {
                 this.showStuIdTip = false;
             }
         },
-        pwd: function(val){
-            if(val!=''){
+        pwd: function(val) {
+            if (val != "") {
                 this.showPwdTip = false;
             }
         }
     },
     methods: {
         login: function() {
-            // this.$router.push({name: 'index'})
-            // this.$router.push({ name: "system" });
-            if(this.stuId == ''){
+            var that = this;
+            if (this.stuId == "") {
                 this.showStuIdTip = true;
             }
-            if(this.pwd == ''){
+            if (this.pwd == "") {
                 this.showPwdTip = true;
                 return false;
             }
             console.log("学号: ", this.stuId);
             console.log("密码: ", this.pwd);
-            this.$http.post('/api/user', {
-                stuId: this.stuId,
-                pwd: this.pwd
-            }).then(function(res){
-                console.log("res: ",res);
-            }).catch(function(err){
-                console.log("err: ",err);
-            })
-            // this.$http.get('/api/user').then(function(res){
-            //     console.log("res: ",res);
-            // }).catch(function(err){
-            //     console.log("err: ",err);
-            // })
-            
+            this.$http
+                .post("/api/user/login", {
+                    stuId: this.stuId,
+                    pwd: this.pwd
+                })
+                .then(function(res) {
+                    console.log("res: ", res);
+                    if (res.data.status == 0) {
+                        that.$alert(res.data.msg, "登录提示", {
+                            confirmButtonText: "确定"
+                        });
+                    } else if (res.data.status == 1) {
+                        if (res.data.result.roleId == 0) {
+                            that.$router.push({ name: "system" });
+                        } else {
+                            that.$router.push({name: 'index'})
+                        }
+                    }
+                })
+                .catch(function(err) {
+                    console.log("err: ", err);
+                });
         }
     }
 };
@@ -137,9 +144,8 @@ export default {
     position: absolute;
     top: 0rem;
     right: 0;
-    color: #B54143;
+    color: #b54143;
 }
-
 
 @media screen and (min-width: 800px) {
     .login {
