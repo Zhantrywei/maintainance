@@ -37,7 +37,7 @@
                 </el-radio-group>
             </el-form-item>
             <el-form-item label="身份证照片" prop="IDCardImg" class="upload-img" v-if="imgShow">
-                <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList2" list-type="picture">
+                <el-upload class="upload-demo" action="/api/user/upload" :on-preview="handlePreview" :on-remove="handleRemove" :file-list="fileList2" list-type="picture">
                     <el-button size="small" type="primary">点击上传</el-button>
                     <span slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</span>
                 </el-upload>
