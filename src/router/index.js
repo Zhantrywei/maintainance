@@ -10,6 +10,12 @@ import Repair from '@/components/repair'
 import Share from '@/components/share'
 import Me from '@/views/me'
 import Commenting from '@/views/commenting'
+import UsersManage from '@/components/usersmanage'
+import RepairManage from '@/components/repairmanage'
+import ShareManage from '@/components/sharemanage'
+
+
+
 Vue.use(Router)
 export default new Router({
   mode: 'history',
@@ -37,7 +43,6 @@ export default new Router({
       path: '/index',
       name: 'index',
       component: Index,
-      redirect: '/index/repair',
       children: [
         {
           name: 'repair',
@@ -59,7 +64,25 @@ export default new Router({
     {
       path: '/system',
       name: 'system',
-      component: System
+      component: System,
+      redirect: '/system/usersmanage',
+      children: [
+        {
+          name: 'usersmanage',
+          path: 'usersmanage',
+          component: UsersManage
+        },
+        {
+          name: 'sharemanage',
+          path: 'sharemanage',
+          component: ShareManage
+        },
+        {
+          name: 'repairmanage',
+          path: 'repairmanage',
+          component: RepairManage
+        }
+      ]
     },
     {
       path: '/me',

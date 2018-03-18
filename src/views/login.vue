@@ -156,10 +156,14 @@ export default {
         font-size: 16px;
     }
     .login-header {
-        width: 50%;
+        width: 100%;
         height: 1.5rem;
         font-size: 30px;
         padding: 20px;
+    }
+    .login-header h1, h2 {
+        display: inline-block;
+        margin-right: 40px;
     }
     .form {
         position: absolute;

@@ -9,7 +9,6 @@ import BaiduMap from 'vue-baidu-map'
 import 'vue-awesome/icons'
 import Icon from 'vue-awesome/components/Icon'
 import axios from 'axios'
-
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
@@ -18,6 +17,7 @@ Vue.use(BaiduMap, {
   ak: 'ovSXZ5CIXP6g34ai930s0u4GiIabHZ6h'
 })
 Vue.component('icon', Icon)
+
 
 /* eslint-disable no-new */
 new Vue({
