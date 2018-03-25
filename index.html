@@ -20,7 +20,7 @@
           //这里是假设在320px宽度设计稿的情况下，1rem = 20px；
           //可以根据实际需要修改
           docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
-          // console.log("fontSize:", docEl.style.fontSize);
+          console.log("fontSize:", docEl.style.fontSize);
         };
       if (!doc.addEventListener) return;
       win.addEventListener(resizeEvt, recalc, false);
@@ -29,6 +29,7 @@
     fun(document, window);
 
   </script>
+  <script src="http://api.map.baidu.com/api?v=2.0&ak=ovSXZ5CIXP6g34ai930s0u4GiIabHZ6h"></script>
 </head>
 
 <body>

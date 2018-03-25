@@ -3,19 +3,19 @@
         <h1>用户注册</h1>
         <el-form ref="registerform" :rules="rules" label-width="100px" size="medium" :inline="inline" label-position="right" :model="registerform">
             <el-form-item label="学号" prop="stuId">
-                <el-input id="stuId" v-model="registerform.stuId" type="number" @blur="checkStuId"></el-input>
+                <el-input id="stuId" v-model="registerform.stuId" @blur="checkStuId"></el-input>
             </el-form-item>
             <el-form-item label="姓名" prop="stuName">
                 <el-input v-model="registerform.stuName"></el-input>
             </el-form-item>
             <el-form-item label="联系方式" prop="phoneNum">
-                <el-input v-model="registerform.phoneNum" type="number"></el-input>
+                <el-input v-model="registerform.phoneNum"></el-input>
             </el-form-item>
             <el-form-item label="电子邮箱" prop="email">
                 <el-input v-model="registerform.email"></el-input>
             </el-form-item>
             <el-form-item label="QQ号码" prop="qq">
-                <el-input v-model="registerform.qq" type="number"></el-input>
+                <el-input v-model="registerform.qq"></el-input>
             </el-form-item>
             <el-form-item label="微信" prop="wechat">
                 <el-input v-model="registerform.wechat"></el-input>
@@ -370,7 +370,8 @@ form {
   .register {
     width: 100%;
     box-sizing: border-box;
-    padding: 20px;
+    /* padding: 20px; */
+    padding: 20px 4px;
   }
   h1 {
     font-size: 1rem;
@@ -378,6 +379,7 @@ form {
     height: 2rem;
     line-height: 2rem;
     margin-bottom: 10px;
+    margin-left: 16px;
   }
   form {
     font-size: 0.36rem;
@@ -393,6 +395,9 @@ form {
   }
   .el-upload__tip {
     margin-left: 10px;
+  }
+  .el-form-item__label {
+    width: 90px !important;
   }
 }
 </style>

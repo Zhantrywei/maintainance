@@ -11,6 +11,8 @@ import Icon from 'vue-awesome/components/Icon'
 import axios from 'axios'
 Vue.prototype.$http = axios
 
+Vue.prototype.BMapMain = BaiduMap
+
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(BaiduMap, {

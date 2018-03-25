@@ -7,12 +7,12 @@
         </router-link>
       </div>
       <div class="location" v-show="showLocation">
-        <icon name="location-arrow"></icon>
-        <span v-text="location"></span>
+        <i class="el-icon-location"></i>
+        <span v-text="city"></span>
       </div>
       <div class="commenting">
          <router-link :to="{name: 'commenting'}" tag="div">
-        <icon name="commenting"></icon>
+          <icon name="bell"></icon>           
          </router-link>
       </div>
     </header>
@@ -36,7 +36,7 @@ export default {
   name: "index",
   data() {
     return {
-      location: "正在定位中",
+      city: "定位中",
       menuList: [],
       showLocation: false,
       position: {},
@@ -44,14 +44,39 @@ export default {
     };
   },
   methods: {
-    getLocation() {
-        console.log("getLocation");
-        navigator.geolocation.getCurrentPosition(function(position){
-            alert(position);
-        })
+    getBMapLocation() {
+      var that = this;
+      var geolocation = new BMap.Geolocation();
+      geolocation.getCurrentPosition(function(r) {
+        if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+          // alert("经度：" + r.point.lng + " , " + "纬度：" + r.point.lat);
+          var point = new BMap.Point(r.point.lng, r.point.lat); //用所定位的经纬度查找所在地省市街道等信息
+          var gc = new BMap.Geocoder();
+          gc.getLocation(point, function(rs) {
+            console.log("rs: ",rs.addressComponents.city)
+            that.city = rs.addressComponents.city;
+            that.showLocation = true;
+          });
+          var stuId = common.getCookie("stuId");
+          that.$http.post('/api/user/position',{
+            stuId: stuId,
+            position: point
+          }).then(function(res){
+            console.log(res);
+          }).catch(function(err){
+            console.log(err);
+          })
+        } else {
+          console.log("failed " + this.getStatus());
+          that.$alert("定位失败，请检查是否打开GPS定位", "定位提示", {
+              confirmButtonText: "确定"
+            });
+        }
+      });
     }
   },
   mounted() {
+    this.getBMapLocation();
   },
   updated() {
     console.log("router: ", this.$route.path);
@@ -113,8 +138,8 @@ export default {
         name: "login"
       });
     }
-    
-      this.getLocation();
+
+    // this.getBMapLocation();
   }
 };
 </script>
@@ -130,17 +155,17 @@ header {
   justify-content: space-between;
   margin: 0 10px;
 }
-.user,
+/* .user,
 .commenting {
   width: 0.4rem;
-}
+} */
 .bm-view {
   width: 100%;
   height: 300px;
 }
-icon {
+/* icon {
   font-size: 16px;
-}
+} */
 nav {
   width: 100%;
   height: 50px;

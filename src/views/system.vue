@@ -46,11 +46,14 @@ export default {
 .system {
   width: 100%;
   height: 100%;
-  background-color: lightblue;
+  background-color: #292c2d;
 }
 .system header {
   height: 80px;
   line-height: 80px;
+  font-size: 20px;
+  color: white;
+  padding-left: 20px;
 }
 .system h2 {
   font-size: 50px;
@@ -65,13 +68,14 @@ export default {
   bottom: 0;
 }
 .system main {
-  background-color: green;
+  background-color: white;
   float: right;
   position: absolute;
   bottom: 0;
   top: 80px;
   left: 150px;
   right: 0;
+  padding: 20px;
 }
 .el-menu-vertical-demo:not(.el-menu--collapse) {
     width: 150px;

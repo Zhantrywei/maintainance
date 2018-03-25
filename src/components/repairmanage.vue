@@ -1,6 +1,10 @@
 <template>
   <div class="repairmanage">
-      报修管理
+      
+      <el-breadcrumb separator="/">
+  <el-breadcrumb-item :to="{ name: 'system' }">首页</el-breadcrumb-item>
+  <el-breadcrumb-item>报修管理</el-breadcrumb-item>
+</el-breadcrumb>
   </div>
 </template>
 

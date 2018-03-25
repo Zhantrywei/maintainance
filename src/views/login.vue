@@ -33,219 +33,221 @@
 
 <script>
 export default {
-    name: "login",
-    data() {
-        return {
-            stuId: "",
-            pwd: "",
-            showTip: false,
-            showStuIdTip: false,
-            showPwdTip: false
-        };
-    },
-    watch: {
-        stuId: function(val) {
-            if (val.indexOf(".") != -1) {
-                this.showTip = true;
-            } else {
-                var val = Number(val);
-                if (isNaN(val)) {
-                    // console.log(val);
-                    this.showTip = true;
-                } else {
-                    console.log("val: ", val);
-                }
-            }
-            if (val == "") {
-                this.showTip = false;
-            } else {
-                this.showStuIdTip = false;
-            }
-        },
-        pwd: function(val) {
-            if (val != "") {
-                this.showPwdTip = false;
-            }
+  name: "login",
+  data() {
+    return {
+      stuId: "",
+      pwd: "",
+      showTip: false,
+      showStuIdTip: false,
+      showPwdTip: false
+    };
+  },
+  watch: {
+    stuId: function(val) {
+      if (val.indexOf(".") != -1) {
+        this.showTip = true;
+      } else {
+        var val = Number(val);
+        if (isNaN(val)) {
+          // console.log(val);
+          this.showTip = true;
+        } else {
+          console.log("val: ", val);
         }
+      }
+      if (val == "") {
+        this.showTip = false;
+      } else {
+        this.showStuIdTip = false;
+      }
     },
-    methods: {
-        login: function() {
-            var that = this;
-            if (this.stuId == "") {
-                this.showStuIdTip = true;
-            }
-            if (this.pwd == "") {
-                this.showPwdTip = true;
-                return false;
-            }
-            console.log("学号: ", this.stuId);
-            console.log("密码: ", this.pwd);
-            this.$http
-                .post("/api/user/login", {
-                    stuId: this.stuId,
-                    pwd: this.pwd
-                })
-                .then(function(res) {
-                    console.log("res: ", res);
-                    if (res.data.status == 0) {
-                        that.$alert(res.data.msg, "登录提示", {
-                            confirmButtonText: "确定"
-                        });
-                    } else if (res.data.status == 1) {
-                        if (res.data.result.roleId == 0) {
-                            that.$router.push({ name: "system" });
-                        } else {
-                            that.$router.push({name: 'index'})
-                        }
-                    }
-                })
-                .catch(function(err) {
-                    console.log("err: ", err);
-                });
-        }
+    pwd: function(val) {
+      if (val != "") {
+        this.showPwdTip = false;
+      }
     }
+  },
+  methods: {
+    login: function() {
+      var that = this;
+      if (this.stuId == "") {
+        this.showStuIdTip = true;
+      }
+      if (this.pwd == "") {
+        this.showPwdTip = true;
+        return false;
+      }
+      console.log("学号: ", this.stuId);
+      console.log("密码: ", this.pwd);
+      this.$http
+        .post("/api/user/login", {
+          stuId: this.stuId,
+          pwd: this.pwd
+        })
+        .then(function(res) {
+          console.log("res: ", res);
+          if (res.data.status == 0) {
+            that.$alert(res.data.msg, "登录提示", {
+              confirmButtonText: "确定"
+            });
+          } else if (res.data.status == 1) {
+            if (res.data.result.roleId == 0) {
+              that.$router.push({ name: "system" });
+            } else {
+              that.$router.push({ name: "index" });
+            }
+          }
+        })
+        .catch(function(err) {
+          console.log("err: ", err);
+        });
+    }
+  }
 };
 </script>
 
 <style scoped>
 .login {
-    width: 100%;
-    height: 100%;
-    background-color: #e6e7e9;
-    /* background-image: url(/static/img/bgimg.jpg); */
-    background-position: top center;
-    background-repeat: no-repeat;
-    background-size: contain;
+  width: 100%;
+  height: 100%;
+  background-color: #e6e7e9;
+  /* background-image: url(/static/img/bgimg.jpg); */
+  background-position: top center;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 .form input {
-    position: relative;
-    width: 100%;
-    /* height: 30px; */
-    height: 1.5rem;
-    box-sizing: border-box;
-    border-bottom: lightgray 1px solid;
-    padding: 0 0.5rem;
-    border-radius: 0.2rem;
-    /* margin-bottom: 10px; */
-    margin-bottom: 0.5rem;
+  position: relative;
+  width: 100%;
+  /* height: 30px; */
+  height: 1.5rem;
+  box-sizing: border-box;
+  border-bottom: lightgray 1px solid;
+  padding: 0 0.5rem;
+  border-radius: 0.2rem;
+  /* margin-bottom: 10px; */
+  margin-bottom: 0.5rem;
 }
 .form button {
-    width: 100%;
-    /* height: 30px; */
-    height: 1.5rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    outline: none;
+  width: 100%;
+  /* height: 30px; */
+  height: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  outline: none;
 }
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 .tip {
-    position: absolute;
-    top: 0rem;
-    right: 0;
-    color: #b54143;
+  position: absolute;
+  top: 0rem;
+  right: 0;
+  color: #b54143;
 }
 
 @media screen and (min-width: 800px) {
-    .login {
-        background-image: url(/static/img/bgimg.jpg);
-        background-position: left center;
-        background-repeat: no-repeat;
-        background-size: 50%;
-        font-size: 16px;
-    }
-    .login-header {
-        width: 100%;
-        height: 1.5rem;
-        font-size: 30px;
-        padding: 20px;
-    }
-    .login-header h1, h2 {
-        display: inline-block;
-        margin-right: 40px;
-    }
-    .form {
-        position: absolute;
-        top: 30%;
-        right: 20px;
-        width: 50%;
-    }
+  .login {
+    background-image: url(/static/img/bgimg.jpg);
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: 50%;
+    font-size: 16px;
+  }
+  .login-header {
+    width: 100%;
+    height: 1.5rem;
+    font-size: 30px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .login-header h1,
+  h2 {
+    display: inline-block;
+    margin-right: 40px;
+  }
+  .form {
+    position: absolute;
+    top: 30%;
+    right: 20px;
+    width: 50%;
+  }
 
-    .form input {
-        width: 100%;
-        /* height: 30px; */
-        height: 0.8rem;
-        box-sizing: border-box;
-        border-bottom: lightgray 1px solid;
-        padding: 0 0.2rem;
-        border-radius: 0.2rem;
-        /* margin-bottom: 10px; */
-        /* margin-bottom: 0.5rem; */
-    }
+  .form input {
+    width: 100%;
+    /* height: 30px; */
+    height: 0.8rem;
+    box-sizing: border-box;
+    border-bottom: lightgray 1px solid;
+    padding: 0 0.2rem;
+    border-radius: 0.2rem;
+    /* margin-bottom: 10px; */
+    /* margin-bottom: 0.5rem; */
+  }
 
-    .form button {
-        width: 100%;
-        /* height: 30px; */
-        height: 0.8rem;
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
-        outline: none;
-    }
-    .tip {
-        font-size: 20px;
-        position: absolute;
-        right: 0;
-        top: 0.8rem;
-    }
+  .form button {
+    width: 100%;
+    /* height: 30px; */
+    height: 0.8rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    outline: none;
+  }
+  .tip {
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    top: 0.8rem;
+  }
 }
 
 @media screen and (min-width: 501px) and (max-width: 799px) {
-    .login {
-        font-size: 0.8rem;
-        background-image: url(/static/img/bgimg.jpg);
-        background-position: top center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
-    .login-header {
-        padding: 15rem 1rem 0 1rem;
-        height: 3rem;
-    }
-    .form input {
-        margin-bottom: 1rem;
-    }
-    .tip {
-        font-size: 20px;
-        position: absolute;
-        right: 0;
-        top: 1.6rem;
-    }
+  .login {
+    font-size: 0.8rem;
+    background-image: url(/static/img/bgimg.jpg);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .login-header {
+    padding: 15rem 1rem 0 1rem;
+    height: 3rem;
+  }
+  .form input {
+    margin-bottom: 1rem;
+  }
+  .tip {
+    font-size: 20px;
+    position: absolute;
+    right: 0;
+    top: 1.6rem;
+  }
 }
 
 @media screen and (min-width: 320px) and (max-width: 500px) {
-    .login {
-        font-size: 0.8rem;
-        background-image: url(/static/img/bgimg.jpg);
-        background-position: top center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
-    .login-header {
-        padding: 15rem 1rem 0 1rem;
-        height: 3rem;
-    }
-    .form {
-        margin-top: 0.5rem;
-    }
-    .form input {
-        margin-bottom: 1rem;
-    }
-    .tip {
-        font-size: 16px;
-        position: absolute;
-        right: 0;
-        top: 1.6rem;
-    }
+  .login {
+    font-size: 0.8rem;
+    background-image: url(/static/img/bgimg.jpg);
+    background-position: top center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+  .login-header {
+    padding: 15rem 1rem 0 1rem;
+    height: 3rem;
+  }
+  .form {
+    margin-top: 0.5rem;
+  }
+  .form input {
+    margin-bottom: 1rem;
+  }
+  .tip {
+    font-size: 16px;
+    position: absolute;
+    right: 0;
+    top: 1.6rem;
+  }
 }
 </style>
