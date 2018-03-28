@@ -78,8 +78,52 @@ body {
     /* 要在 Safari 中正常工作，需要再引入如下两行代码 */
     max-width: 100%;
     max-height: 100%;
-    /* font-size: 0.4rem; */
-    /* line-height: 0.4rem; */
+    font-size: 0.7rem;
+    line-height: 0.7rem;
+}
+
+[class*=" el-icon-"], [class^=el-icon-] {
+    font-size: 0.7rem;
+}
+
+@media screen and (min-width: 320px) and (max-width: 768px){
+    html {
+        font-size: 25px;
+    }
+    .fa-icon {
+        width: auto;
+        height: 1em; /* 或任意其它字体大小相对值 */
+      
+        /* 要在 Safari 中正常工作，需要再引入如下两行代码 */
+        max-width: 100%;
+        max-height: 100%;
+        font-size: 0.8rem;
+        line-height: 0.8rem;
+    }
+
+    [class*=" el-icon-"], [class^=el-icon-] {
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (min-width: 768px){
+    html {
+        font-size: 25px;
+    }
+    .fa-icon {
+        width: auto;
+        height: 1em; /* 或任意其它字体大小相对值 */
+      
+        /* 要在 Safari 中正常工作，需要再引入如下两行代码 */
+        max-width: 100%;
+        max-height: 100%;
+        font-size: 25px;
+        line-height: 25px;
+    }
+
+    [class*=" el-icon-"], [class^=el-icon-] {
+        font-size: 25px;
+    }
 }
 
 

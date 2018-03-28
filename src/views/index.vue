@@ -46,7 +46,9 @@ export default {
   methods: {
     getBMapLocation() {
       var that = this;
-      var geolocation = new BMap.Geolocation();
+      // console.log(BMap);
+      var geolocation = new BMap.Geolocation;
+      console.log(geolocation);
       geolocation.getCurrentPosition(function(r) {
         if (this.getStatus() == BMAP_STATUS_SUCCESS) {
           // alert("经度：" + r.point.lng + " , " + "纬度：" + r.point.lat);
@@ -58,14 +60,14 @@ export default {
             that.showLocation = true;
           });
           var stuId = common.getCookie("stuId");
-          that.$http.post('/api/user/position',{
-            stuId: stuId,
-            position: point
-          }).then(function(res){
-            console.log(res);
-          }).catch(function(err){
-            console.log(err);
-          })
+          // that.$http.post('/api/user/position',{
+          //   stuId: stuId,
+          //   position: point
+          // }).then(function(res){
+          //   console.log(res);
+          // }).catch(function(err){
+          //   console.log(err);
+          // })
         } else {
           console.log("failed " + this.getStatus());
           that.$alert("定位失败，请检查是否打开GPS定位", "定位提示", {
@@ -186,6 +188,14 @@ nav li {
   justify-content: center;
   align-items: center;
 }
+nav li div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+nav li div span{
+  margin-left: 5px;
+}
 nav li + li {
   border-left: 1px solid gray;
 }
@@ -200,7 +210,13 @@ main {
 
 @media screen and (min-width: 800px) {
   .index {
-    font-size: 0.4rem;
+    /* font-size: 0.7rem !important; */
+    vertical-align: middle;
+  }
+}
+@media screen and (min-width: 320px) and (max-width: 800px) {
+  .index {
+    /* font-size: 0.7rem !important; */
     vertical-align: middle;
   }
 }
