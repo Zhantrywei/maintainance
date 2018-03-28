@@ -2,9 +2,16 @@
   <div class="apply clearfix">
     <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
     </baidu-map>
-    <div class="applyList">
-      <el-button type="primary">
+    <div class="applybutton">
+      <el-button type="primary" @click="applylist=true">
         <i class="el-icon-edit applyicon"></i> 我要报修</el-button>
+    </div>
+    <div class="applyList" v-show="applyList">
+      <form class="applyForm">
+        <label for="applyTitle">主题:</label>
+        <el-input id="applyTitle" size="small" v-model="applyTitle" placeholder="请输入报修主题"></el-input>
+        
+      </form>
     </div>
   </div>
 </template>
@@ -17,7 +24,18 @@ export default {
             center: { lng: 0, lat: 0 },
             zoom: 3,
             coords: "",
-            address: ""
+            address: "",
+            applyList: true,
+            form: {
+                name: "",
+                region: "",
+                date1: "",
+                date2: "",
+                delivery: false,
+                type: [],
+                resource: "",
+                desc: ""
+            }
         };
     },
     methods: {
@@ -70,7 +88,7 @@ export default {
     width: 100%;
     bottom: 0;
 }
-.applyList {
+.applybutton {
     position: absolute;
     bottom: 20px;
     left: 10px;
@@ -80,23 +98,46 @@ export default {
     /* height: 500px; */
 }
 .applyicon {
-  font-size: 20px;
+    font-size: 20px;
 }
 
-@media screen and (min-width:320px) and (max-width:600px) {
-  .applyList {   
+.applyList {
     position: absolute;
-    bottom: 10px;
     left: 0;
-    z-index: 999;
-    /* background-color: blue; */
     width: 100%;
-    box-sizing: border-box;
-    /* height: 500px; */
-    text-align: center;
-  }
+    bottom: 0;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-@media screen and (min-width:600px){
-  
+
+.applyForm {
+    width: 90%;
+    height: 90%;
+    border-radius: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+
+    background-color: pink;
+}
+
+@media screen and (min-width: 320px) and (max-width: 600px) {
+    .applybutton {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        z-index: 999;
+        /* background-color: blue; */
+        width: 100%;
+        box-sizing: border-box;
+        /* height: 500px; */
+        text-align: center;
+    }
+}
+@media screen and (min-width: 600px) {
 }
 </style>

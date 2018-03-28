@@ -208,16 +208,23 @@ main {
   bottom: 50px;
 }
 
-@media screen and (min-width: 800px) {
+@media screen and (min-width: 800px) and (max-width: 1000px) {
   .index {
-    /* font-size: 0.7rem !important; */
+    font-size: 0.5rem !important;
+    vertical-align: middle;
+  }
+}
+@media screen and (min-width: 1000px) {
+  .index {
+    font-size: 30px !important;
     vertical-align: middle;
   }
 }
 @media screen and (min-width: 320px) and (max-width: 800px) {
   .index {
-    /* font-size: 0.7rem !important; */
+    font-size: 20px !important;
     vertical-align: middle;
   }
+
 }
 </style>
