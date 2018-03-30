@@ -3,7 +3,7 @@
     <header>
       <div class="user" >
         <router-link :to="{name: 'me'}" tag="div">
-          <icon name="user"></icon>
+          <icon name="user" @click="usershow = true"></icon>
         </router-link>
       </div>
       <div class="location" v-show="showLocation">
@@ -19,7 +19,7 @@
     <main>
       <router-view></router-view>
     </main>
-    <nav>
+    <nav style="z-index:1001;background-color:#E6E7E9">
         <li v-for="(item,index) in menuList" :key="index">
             <router-link :to="{name: item.routername}" tag="div">
             <icon :name="item.iconname"></icon>
@@ -40,13 +40,12 @@ export default {
       menuList: [],
       showLocation: false,
       position: {},
-      userShow: true
+      usershow: true
     };
   },
   methods: {
     getBMapLocation() {
       var that = this;
-      // console.log(BMap);
       var geolocation = new BMap.Geolocation;
       console.log(geolocation);
       geolocation.getCurrentPosition(function(r) {
@@ -151,11 +150,13 @@ header {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
-  /* width: 100%; */
+  width: 100%;
   height: 50px;
   align-items: center;
   justify-content: space-between;
-  margin: 0 10px;
+  padding: 0 10px;
+  position: fixed;
+  z-index: 1001;
 }
 /* .user,
 .commenting {
@@ -202,11 +203,12 @@ nav li + li {
 
 main {
   width: 100%;
-  position: absolute;
+  position: fixed;
   background-color: lightgreen;
   top: 50px;
   bottom: 50px;
 }
+
 
 @media screen and (min-width: 800px) and (max-width: 1000px) {
   .index {

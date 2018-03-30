@@ -1,19 +1,37 @@
 <template>
-  <div class="apply clearfix">
-    <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
-    </baidu-map>
-    <div class="applybutton">
-      <el-button type="primary" @click="applylist=true">
-        <i class="el-icon-edit applyicon"></i> 我要报修</el-button>
+    <div class="apply clearfix">
+        <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
+        </baidu-map>
+        <div class="applybutton">
+            <el-button type="primary" @click="applyList=true">
+                <i class="el-icon-edit-outline applyicon"></i> 我要报修</el-button>
+        </div>
+        <div class="applyList" v-show="applyList" @click.stop.self="applyList = false">
+            <i class="el-icon-close closebtn" @click="applyList=false"></i>
+            <el-form ref="form" :model="form" label-width="80px" :rules="rules">
+                <el-form-item label-width="0px" style="text-align:center;">
+                    <h2>报修单</h2>
+                </el-form-item>
+                <el-form-item label="主题" prop="theme">
+                    <el-input v-model="form.theme" placeholder="请输入主题"></el-input>
+                </el-form-item>
+                <el-form-item label="报修内容" prop="content">
+                    <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 3}" placeholder="请输入内容" v-model="form.content">
+                    </el-input>
+                </el-form-item>
+                <el-form-item label="图片上传">
+                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture">
+                        <el-button size="small" type="primary">点击上传</el-button>
+                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                    </el-upload>
+                </el-form-item>
+                <el-form-item style="text-align: right;">
+                    <el-button type="primary" @click="submitForm('form')">确定</el-button>
+                    <el-button @click="resetForm('form')">重置</el-button>
+                </el-form-item>
+            </el-form>
+        </div>
     </div>
-    <div class="applyList" v-show="applyList">
-      <form class="applyForm">
-        <label for="applyTitle">主题:</label>
-        <el-input id="applyTitle" size="small" v-model="applyTitle" placeholder="请输入报修主题"></el-input>
-        
-      </form>
-    </div>
-  </div>
 </template>
 
 <script>
@@ -25,36 +43,55 @@ export default {
             zoom: 3,
             coords: "",
             address: "",
-            applyList: true,
+            applyList: false,
             form: {
-                name: "",
-                region: "",
-                date1: "",
-                date2: "",
-                delivery: false,
-                type: [],
-                resource: "",
-                desc: ""
+                theme: "",
+                content: ""
+            },
+            rules: {
+                theme: [
+                    {
+                        required: true,
+                        message: "请输入报修主题",
+                        trigger: "blur"
+                    },
+                    {
+                        min: 3,
+                        max: 10,
+                        message: "长度在 3 到 5 个字符",
+                        trigger: "blur"
+                    }
+                ],
+                content: [
+                    {
+                        required: true,
+                        message: "请输入报修内容",
+                        trigger: "blur"
+                    },
+                    {
+                        min: 10,
+                        max: 500,
+                        message: "长度在 10 到 500个字符",
+                        trigger: "blur"
+                    }
+                ]
             }
         };
     },
     methods: {
         handler({ BMap, map }) {
-            // var point = new BMap.Point(116.331398, 39.897445);
-            // map.centerAndZoom(point, 18);
-
             var that = this;
-
             var geolocation = new BMap.Geolocation();
             geolocation.getCurrentPosition(
                 function(r) {
+                    console.log("r: ", typeof r);
                     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
                         var mk = new BMap.Marker(r.point);
                         map.addOverlay(mk);
                         // map.panTo(r.point);
                         var point = new BMap.Point(r.point.lng, r.point.lat); //用所定位的经纬度查找所在地省市街道等信息
                         map.centerAndZoom(r.point, 18);
-                        mk.setAnimation(BMAP_ANIMATION_BOUNCE);
+                        // mk.setAnimation(BMAP_ANIMATION_BOUNCE);
                     } else {
                         alert("failed" + this.getStatus());
                     }
@@ -71,12 +108,22 @@ export default {
             //   //BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
             //   //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
             //   //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
-        }
+        },
+        submitForm(formName) {
+            this.$refs[formName].validate(valid => {
+                if (valid) {
+                    alert("submit!");
+                } else {
+                    console.log("error submit!!");
+                    return false;
+                }
+            });
+        },
+        resetForm(formName) {
+            this.$refs[formName].resetFields();
+        },
     },
-    beforeMount() {
-        // navigator.geolocation.getCurrentPosition(function(position){
-        //   alert("位置: "+ position.coords.longitude +','+position.coords.latitude)
-        // })
+    mounted() {
     }
 };
 </script>
@@ -87,6 +134,7 @@ export default {
     top: 0;
     width: 100%;
     bottom: 0;
+    z-index: 0;
 }
 .applybutton {
     position: absolute;
@@ -123,6 +171,20 @@ export default {
     box-sizing: border-box;
 
     background-color: pink;
+}
+
+.el-form {
+    width: 90%;
+    border-radius: 10px;
+    background: white;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.closebtn {
+    position: absolute;
+    right: 6%;
+    top: calc(50% - 190px);
 }
 
 @media screen and (min-width: 320px) and (max-width: 600px) {

@@ -15,6 +15,7 @@ export default {
 html, body {
   width: 100%;
   height: 100%;
+  /* overflow: hidden; */
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
@@ -24,6 +25,7 @@ html, body {
   color: #2c3e50;
   /* background-color: lightblue; */
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  overflow: hidden;
 }
 </style>
