@@ -25,7 +25,7 @@ html, body {
   color: #2c3e50;
   /* background-color: lightblue; */
   width: 100%;
-  /* height: 100%; */
-  overflow: hidden;
+  height: 100%;
+  /* overflow: hidden; */
 }
 </style>
