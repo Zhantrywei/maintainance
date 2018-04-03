@@ -19,10 +19,13 @@
                     <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 3}" placeholder="请输入内容" v-model="form.content">
                     </el-input>
                 </el-form-item>
-                <el-form-item label="图片上传">
-                    <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" list-type="picture">
+                <el-form-item label="图片上传" prop="images" class="is-required">
+                    <el-upload class="upload-demo" :data="pictureData" action="/api/record/upload" list-type="picture" name="ApplyImg">
                         <el-button size="small" type="primary">点击上传</el-button>
-                        <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                        <div class="el-form-item__error" v-show="tipshow">
+                            请上传图片
+                        </div>
+                        <!-- <span slot="tip" class="el-upload__tip"> 最多上传3张 </span> -->
                     </el-upload>
                 </el-form-item>
                 <el-form-item style="text-align: right;">
@@ -35,6 +38,7 @@
 </template>
 
 <script>
+import common from '../assets/js/common'
 export default {
     name: "apply",
     data() {
@@ -46,7 +50,8 @@ export default {
             applyList: false,
             form: {
                 theme: "",
-                content: ""
+                content: "",
+                images: []
             },
             rules: {
                 theme: [
@@ -75,6 +80,11 @@ export default {
                         trigger: "blur"
                     }
                 ]
+            },
+            markerPoint: { lng: 0, lat: 0 },
+            tipshow: false,
+            pictureData: {
+                "stuId": common.getCookie("stuId")
             }
         };
     },
@@ -110,7 +120,12 @@ export default {
             //   //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
         },
         submitForm(formName) {
+            var that = this;
             this.$refs[formName].validate(valid => {
+                if (that.form.images.length == 0) {
+                    that.tipshow = true;
+                    return false;
+                }
                 if (valid) {
                     alert("submit!");
                 } else {
@@ -121,10 +136,10 @@ export default {
         },
         resetForm(formName) {
             this.$refs[formName].resetFields();
-        },
+            this.tipshow = false;
+        }
     },
-    mounted() {
-    }
+    mounted() {}
 };
 </script>
 
