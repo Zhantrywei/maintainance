@@ -10,9 +10,9 @@
         <i class="el-icon-location"></i>
         <span v-text="city"></span>
       </div>
-      <div class="commenting">
+      <div class="commenting" is-dot>
          <router-link :to="{name: 'commenting'}" tag="div">
-          <icon name="bell"></icon>           
+          <icon  name="bell"></icon>           
          </router-link>
       </div>
     </header>

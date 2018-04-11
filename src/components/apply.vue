@@ -3,7 +3,7 @@
         <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
         </baidu-map>
         <div class="applybutton">
-            <el-button type="primary" @click="applyList=true">
+            <el-button type="primary" @click="applyList=true" :disabled="applyDisabled">
                 <i class="el-icon-edit-outline applyicon"></i> 我要报修</el-button>
         </div>
         <div class="applyList" v-show="applyList" @click.stop.self="applyList = false">
@@ -20,7 +20,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item label="图片上传" prop="images" class="is-required">
-                    <el-upload class="upload-demo" :data="pictureData" action="/api/record/upload" list-type="picture" name="ApplyImg">
+                    <el-upload class="upload-demo" :data="pictureData" action="/api/record/upload" :limit="1" list-type="picture" name="ApplyImg" :on-success="uploadSuccess" :on-remove="handleRemove">
                         <el-button size="small" type="primary">点击上传</el-button>
                         <div class="el-form-item__error" v-show="tipshow">
                             请上传图片
@@ -34,11 +34,40 @@
                 </el-form-item>
             </el-form>
         </div>
+        <div class="showtable" v-show="showtable">
+            <el-table :data="applyData" style="width: 100%">
+                <el-table-column type="expand" align="center">
+                    <template slot-scope="props">
+                        <el-form label-position="left" inline class="demo-table-expand">
+                            <el-form-item label="学号">
+                                <span>{{ props.row.applyStuId }}</span>
+                            </el-form-item>
+                            <el-form-item label="姓名">
+                                <span>{{ props.row.applyName }}</span>
+                            </el-form-item>
+                            <el-form-item label="报修时间">
+                                <span>{{ props.row.applyTime }}</span>
+                            </el-form-item>
+                            <el-form-item label="维修状态">
+                                <span>{{ props.row.status == -1?'未接单': '已接单' }}</span>
+                            </el-form-item>
+                        </el-form>
+                    </template>
+                </el-table-column>
+                <el-table-column type="index" label="序号" align="center">
+                </el-table-column>
+                <el-table-column label="报修主题" align="center" prop="questionTitle">
+                </el-table-column>
+                <el-table-column label="报修时间" align="center" prop="applyTime">
+                </el-table-column>
+            </el-table>
+        </div>
+        
     </div>
 </template>
 
 <script>
-import common from '../assets/js/common'
+import common from "../assets/js/common";
 export default {
     name: "apply",
     data() {
@@ -51,7 +80,8 @@ export default {
             form: {
                 theme: "",
                 content: "",
-                images: []
+                images: null,
+                tmpImages: null
             },
             rules: {
                 theme: [
@@ -84,8 +114,32 @@ export default {
             markerPoint: { lng: 0, lat: 0 },
             tipshow: false,
             pictureData: {
-                "stuId": common.getCookie("stuId")
-            }
+                stuId: common.getCookie("stuId")
+            },
+            applyData: [
+                {
+                    _id: "5acdc8806e3cfd49541e6307",
+                    applyId: "5acd916f8f938448d8b040d9",
+                    applyStuId: "201441404409",
+                    applyName: "普通用户",
+                    applyPosition: { lng: 114.02597366, lat: 22.54605355 },
+                    applyTime: "2018-4-11 16:34:8",
+                    maintainId: null,
+                    maintainStuId: null,
+                    maintainName: null,
+                    maintainPosition: null,
+                    maintainTime: null,
+                    completeTime: null,
+                    serviceStar: null,
+                    status: -1,
+                    questionTitle: "重装系统",
+                    questionDes: "重装系统重装系统重装系统重装系统",
+                    questionImg:
+                        "http://localhost:3000/public/images/record/201441404409/ApplyImg1523435647093.jpg"
+                }
+            ],
+            showtable: false,
+            applyDisabled: false
         };
     },
     methods: {
@@ -97,6 +151,11 @@ export default {
                     console.log("r: ", typeof r);
                     if (this.getStatus() == BMAP_STATUS_SUCCESS) {
                         var mk = new BMap.Marker(r.point);
+                        that.markerPoint = {
+                            lng: r.point.lng,
+                            lat: r.point.lat
+                        };
+                        console.log("markerPoint: ", that.markerPoint);
                         map.addOverlay(mk);
                         // map.panTo(r.point);
                         var point = new BMap.Point(r.point.lng, r.point.lat); //用所定位的经纬度查找所在地省市街道等信息
@@ -119,15 +178,50 @@ export default {
             //   //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
             //   //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
         },
+        handleRemove(file, fileList) {
+            console.log(file, fileList);
+            this.form.images = null;
+            this.form.tmpImages = null;
+        },
         submitForm(formName) {
             var that = this;
             this.$refs[formName].validate(valid => {
-                if (that.form.images.length == 0) {
+                if (that.form.images == null) {
                     that.tipshow = true;
                     return false;
                 }
                 if (valid) {
-                    alert("submit!");
+                    console.log(that.markerPoint);
+                    this.$http
+                        .post("/api/record/apply", {
+                            applyId: common.getCookie("userId"),
+                            applyStuId: common.getCookie("stuId"),
+                            applyName: common.getCookie("stuName"),
+                            applyForm: that.form,
+                            applyPosition: that.markerPoint,
+                            applyTime: common.showTime(new Date().valueOf())
+                        })
+                        .then(function(res) {
+                            console.log("res: ", res);
+                            if (res.data.status == 1) {
+                                that.$alert(res.data.msg, "报修提示", {
+                                    confirmButtonText: "确定",
+                                    callback: function() {
+                                        that.applyList = false;
+                                    }
+                                });
+                            } else {
+                                that.$alert(res.data.msg, "报修提示", {
+                                    confirmButtonText: "确定",
+                                    callback: function() {
+                                        that.applyList = false;
+                                    }
+                                });
+                            }
+                        })
+                        .catch(function(err) {
+                            console.log("err: ", err);
+                        });
                 } else {
                     console.log("error submit!!");
                     return false;
@@ -137,9 +231,46 @@ export default {
         resetForm(formName) {
             this.$refs[formName].resetFields();
             this.tipshow = false;
+        },
+        uploadSuccess(response, file, fileList) {
+            console.log("uploadres: ", response.result.imgUrl);
+            this.form.images = response.result.imgUrl;
+            this.form.tmpImages = response.result.tmpUrl;
+            console.log(this.form.images);
+            this.tipshow = false;
+        },
+        getApplyList() {
+            var that = this;
+            this.$http
+                .post("/api/record/getlist", {
+                    applyStuId: common.getCookie("stuId")
+                })
+                .then(function(res) {
+                    if (res.data.status == 1) {
+                        console.log("testres: ", res);
+                        if (res.data.result == null) {
+                            //可以申请报修
+                            that.applyDisabled = false;
+                        } else {
+                            //不可以申请报修
+                            that.applyDisabled = true;
+                            that.showtable = true;
+                        }
+                    } else {
+                        that.$alert(res.data.msg, "提示", {
+                            confirmButtonText: "确定",
+                            callback: function() {}
+                        });
+                    }
+                })
+                .catch(function(err) {
+                    console.log("err: ", err);
+                });
         }
     },
-    mounted() {}
+    mounted() {
+        this.getApplyList();
+    }
 };
 </script>
 
@@ -217,4 +348,8 @@ export default {
 }
 @media screen and (min-width: 600px) {
 }
+
+/* .showtable {
+    width: ;
+} */
 </style>
