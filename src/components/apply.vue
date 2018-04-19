@@ -1,6 +1,9 @@
 <template>
     <div class="apply clearfix">
-        <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler">
+        <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler" :scroll-wheel-zoom="true">
+            <!-- <bm-view class="map">
+            </bm-view> -->
+            <bm-walking :panel="false" :start="markerPoint" @markersset="markersset" :end="maintainPoint" :auto-viewport="true" v-show="bmWalkingShow"></bm-walking>
         </baidu-map>
         <div class="applybutton">
             <el-button type="primary" @click="applyList=true" :disabled="applyDisabled">
@@ -34,7 +37,7 @@
                 </el-form-item>
             </el-form>
         </div>
-        <div class="showtable" v-show="showtable">
+        <!-- <div class="showtable" v-show="showtable">
             <el-table :data="applyData" style="width: 100%">
                 <el-table-column type="expand" align="center">
                     <template slot-scope="props">
@@ -61,8 +64,8 @@
                 <el-table-column label="报修时间" align="center" prop="applyTime">
                 </el-table-column>
             </el-table>
-        </div>
-        
+        </div> -->
+
     </div>
 </template>
 
@@ -112,6 +115,7 @@ export default {
                 ]
             },
             markerPoint: { lng: 0, lat: 0 },
+            maintainPoint: { lng: 0, lat: 0 },
             tipshow: false,
             pictureData: {
                 stuId: common.getCookie("stuId")
@@ -139,7 +143,8 @@ export default {
                 }
             ],
             showtable: false,
-            applyDisabled: false
+            applyDisabled: false,
+            bmWalkingShow: false
         };
     },
     methods: {
@@ -266,10 +271,14 @@ export default {
                 .catch(function(err) {
                     console.log("err: ", err);
                 });
+        },
+        //标注完成
+        markersset() {
+            console.log("标注完成");
         }
     },
     mounted() {
-        this.getApplyList();
+        // this.getApplyList();
     }
 };
 </script>
@@ -352,4 +361,11 @@ export default {
 /* .showtable {
     width: ;
 } */
+
+.BMap_Marker {
+    display: none;
+}
+.BMap_noprint {
+    display: none;
+}
 </style>
