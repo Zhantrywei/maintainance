@@ -28,11 +28,6 @@
             </span>
 
           </div>
-          <div class="comment" v-show="showComment">
-            <el-input placeholder="请输入评论" v-model="input4">
-              <el-button slot="append" icon="el-icon-check"></el-button>
-            </el-input>
-          </div>
         </li>
         <li class="clearfix">
           <!-- <p v-html="item.shareTitle"></p> -->
@@ -53,13 +48,14 @@
             </span>
 
           </div>
-          <div class="comment" v-show="showComment">
-            <el-input placeholder="请输入评论" v-model="input4">
-              <el-button slot="append" icon="el-icon-check"></el-button>
-            </el-input>
-          </div>
         </li>
       </ul>
+    </div>
+
+    <div class="comment" v-show="showComment">
+      <el-input placeholder="请输入评论" v-model="input4">
+        <el-button slot="append" icon="el-icon-check"></el-button>
+      </el-input>
     </div>
   </div>
 </template>
