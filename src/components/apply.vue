@@ -1,9 +1,11 @@
 <template>
     <div class="apply clearfix">
         <baidu-map class="bm-view" :center="center" :zoom="zoom" @ready="handler" :scroll-wheel-zoom="true">
-            <!-- <bm-view class="map">
-            </bm-view> -->
-            <bm-walking :panel="false" :start="markerPoint" @markersset="markersset" :end="maintainPoint" :auto-viewport="true" v-show="bmWalkingShow"></bm-walking>
+            <apply-marker :position="markerPoint">
+            </apply-marker>
+            <repair-marker :position="maintainPoint">
+            </repair-marker>
+            <bm-walking :panel="false" @draw="draw" :start="markerPoint" @markersset="markersset" :end="maintainPoint" :auto-viewport="true" v-show="bmWalkingShow"></bm-walking>
         </baidu-map>
         <div class="applybutton">
             <el-button type="primary" @click="applyList=true" :disabled="applyDisabled">
@@ -70,6 +72,8 @@
 </template>
 
 <script>
+import ApplyMarker from "./applyMarker"
+import RepairMarker from "./repairMarker"
 import common from "../assets/js/common";
 export default {
     name: "apply",
@@ -115,7 +119,7 @@ export default {
                 ]
             },
             markerPoint: { lng: 0, lat: 0 },
-            maintainPoint: { lng: 0, lat: 0 },
+            maintainPoint: { lng: 114.0345, lat: 22.546482 },
             tipshow: false,
             pictureData: {
                 stuId: common.getCookie("stuId")
@@ -144,8 +148,11 @@ export default {
             ],
             showtable: false,
             applyDisabled: false,
-            bmWalkingShow: false
+            bmWalkingShow: true
         };
+    },
+    components: {
+        ApplyMarker,RepairMarker
     },
     methods: {
         handler({ BMap, map }) {
@@ -275,11 +282,14 @@ export default {
         //标注完成
         markersset() {
             console.log("标注完成");
+        },
+        draw({ el, BMap, map }) {
+            const pixel = map.pointToOverlayPixel(
+                new BMap.Point(114.02597366, 22.54605355)
+            );
         }
     },
-    mounted() {
-        // this.getApplyList();
-    }
+    mounted() {}
 };
 </script>
 
