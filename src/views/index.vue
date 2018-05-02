@@ -10,9 +10,11 @@
         <i class="el-icon-location"></i>
         <span v-text="city"></span>
       </div>
-      <div class="commenting" is-dot>
-         <router-link :to="{name: 'commenting'}" tag="div">
-          <icon  name="bell"></icon>           
+      <div class="commenting" :is-dot="hasCommenting">
+         <router-link :to="{name: 'commenting'}" tag="div">  
+          <el-badge is-dot class="item">
+           <icon  name="bell"></icon>  
+          </el-badge>       
          </router-link>
       </div>
     </header>
@@ -38,23 +40,26 @@ export default {
     return {
       city: "定位中",
       menuList: [],
-      showLocation: false,
+      showLocation: true,
       position: {},
-      usershow: true
+      usershow: true,
+      hasCommenting: false
     };
   },
   methods: {
     getBMapLocation() {
       var that = this;
-      var geolocation = new BMap.Geolocation;
+      var geolocation = new BMap.Geolocation();
       console.log(geolocation);
       geolocation.getCurrentPosition(function(r) {
         if (this.getStatus() == BMAP_STATUS_SUCCESS) {
           // alert("经度：" + r.point.lng + " , " + "纬度：" + r.point.lat);
+          common.setCookie("centerLng", r.point.lng);
+          common.setCookie("centerLat", r.point.lat);
           var point = new BMap.Point(r.point.lng, r.point.lat); //用所定位的经纬度查找所在地省市街道等信息
           var gc = new BMap.Geocoder();
           gc.getLocation(point, function(rs) {
-            console.log("rs: ",rs.addressComponents.city)
+            console.log("rs: ", rs.addressComponents.city);
             that.city = rs.addressComponents.city;
             that.showLocation = true;
           });
@@ -70,10 +75,16 @@ export default {
         } else {
           console.log("failed " + this.getStatus());
           that.$alert("定位失败，请检查是否打开GPS定位", "定位提示", {
-              confirmButtonText: "确定"
-            });
+            confirmButtonText: "确定"
+          });
         }
       });
+    },
+    getCommenting(){
+      if(common.getCookie("stuId")){
+        var stuId = common.getCookie("stuId");
+        
+      }
     }
   },
   mounted() {
@@ -189,12 +200,12 @@ nav li {
   justify-content: center;
   align-items: center;
 }
-nav li div{
+nav li div {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-nav li div span{
+nav li div span {
   margin-left: 5px;
 }
 nav li + li {
@@ -207,8 +218,8 @@ main {
   background-color: lightgreen;
   top: 50px;
   bottom: 50px;
+  overflow-y: auto;
 }
-
 
 @media screen and (min-width: 800px) and (max-width: 1000px) {
   .index {
@@ -227,6 +238,5 @@ main {
     font-size: 20px !important;
     vertical-align: middle;
   }
-
 }
 </style>

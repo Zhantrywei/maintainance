@@ -88,5 +88,9 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
+  },
+  //添加百度地图
+  externals: {
+    "BMap": "BMap"
   }
 }

@@ -4,7 +4,7 @@
       <el-breadcrumb-item :to="{ name: 'system' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>用户管理</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-table :data="userList" style="width: 100%;" :stripe="true">
+    <el-table :data="userList" style="width: 100%;" :stripe="true" height="500">
       <el-table-column class="demo-table-expand" type="expand" fixed>
         <template slot-scope="props">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -21,10 +21,10 @@
               <span>{{ props.row.wechat }}</span>
             </el-form-item>
             <el-form-item label="身份证图片" v-if="props.row.IDCardImg" width="100">
-              <img :src="props.row.IDCardImg" style="width: 200px;height:200px">
+              <img :src="props.row.IDCardImg" style="height:200px">
             </el-form-item>
             <el-form-item label="学生证图片" v-if="props.row.StuCardImg" width="100">
-              <img :src="props.row.StuCardImg" style="width: 200px;height:200px">
+              <img :src="props.row.StuCardImg" style="height:200px">
             </el-form-item>
           </el-form>
         </template>
@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column prop="sex" label="性别" :formatter="formatterSex" align="center">
       </el-table-column>
-      <el-table-column prop="roleName" label="用户角色" align="center">
+      <el-table-column prop="roleName" label="用户角色" align="center" >
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
@@ -122,3 +122,9 @@ export default {
     width: 50%;
 }
 </style>
+<style>
+.el-table__fixed-right::before, .el-table__fixed::before,.el-table::before{
+  height: 0;
+}
+</style>
+

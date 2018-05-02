@@ -120,21 +120,24 @@ export default {
 .form input {
   position: relative;
   width: 100%;
-  /* height: 30px; */
-  height: 1.5rem;
+  height: 30px;
+  /* height: 1.5rem; */
   box-sizing: border-box;
   border-bottom: lightgray 1px solid;
-  padding: 0 0.5rem;
-  border-radius: 0.2rem;
-  /* margin-bottom: 10px; */
-  margin-bottom: 0.5rem;
+  /* padding: 0 0.5rem; */
+  padding: 0 10px;
+  /* border-radius: 0.2rem; */
+  border-radius: 4px;
+  margin-bottom: 10px;
+  /* margin-bottom: 0.5rem; */
 }
 .form button {
   width: 100%;
-  /* height: 30px; */
-  height: 1.5rem;
+  height: 30px;
+  /* height: 1.5rem; */
   border-radius: 4px;
-  margin-bottom: 0.5rem;
+  /* margin-bottom: 0.5rem; */
+  margin-bottom: 10px;
   outline: none;
 }
 .text-right {
@@ -177,28 +180,29 @@ export default {
   .form input {
     width: 100%;
     /* height: 30px; */
-    height: 0.8rem;
+    height: 50px;
     box-sizing: border-box;
     border-bottom: lightgray 1px solid;
-    padding: 0 0.2rem;
+    padding: 0 10px;
     border-radius: 0.2rem;
-    /* margin-bottom: 10px; */
+    margin-bottom: 20px;
     /* margin-bottom: 0.5rem; */
   }
 
   .form button {
     width: 100%;
     /* height: 30px; */
-    height: 0.8rem;
+    /* height: 0.8rem; */
+    height: 50px;
     border-radius: 4px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 20px;
     outline: none;
   }
   .tip {
     font-size: 20px;
     position: absolute;
     right: 0;
-    top: 0.8rem;
+    top: 20px;
   }
 }
 
