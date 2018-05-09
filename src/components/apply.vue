@@ -7,7 +7,8 @@
             </repair-marker>
             <bm-walking :panel="false" @draw="draw" :start="markerPoint" @markersset="markersset" :end="maintainPoint" :auto-viewport="true" v-show="bmWalkingShow"></bm-walking> -->
         <!-- </baidu-map> -->
-        <b-map-component class="bm-view" ></b-map-component>
+        <b-map-component class="bm-view" v-if="mapShow" :show-img="showImg"></b-map-component>
+        <main-route-component class="bm-view" v-else :apply-position="markerPoint" :repair-position="maintainPoint"></main-route-component>
         <div class="applybutton">
             <el-button type="primary" @click="applyList=true" :disabled="applyDisabled">
                 <i class="el-icon-edit-outline applyicon"></i> 我要报修</el-button>
@@ -73,10 +74,12 @@
 </template>
 
 <script>
-import BMapComponent from './BMapComponent';
+import BMapComponent from "./BMapComponent";
 import ApplyMarker from "./applyMarker";
 import RepairMarker from "./repairMarker";
 import common from "../assets/js/common";
+import Bus from "../assets/js/bus";
+import MainRouteComponent from "./MainRouteCom";
 export default {
   name: "apply",
   data() {
@@ -120,78 +123,84 @@ export default {
           }
         ]
       },
-      markerPoint: { lng: 0, lat: 0 },
+      markerPoint: {
+        lng: common.getCookie("centerLng"),
+        lat: common.getCookie("centerLat")
+      },
       maintainPoint: { lng: 0, lat: 0 },
       tipshow: false,
       pictureData: {
         stuId: common.getCookie("stuId")
       },
       applyData: [
-        {
-          _id: "5acdc8806e3cfd49541e6307",
-          applyId: "5acd916f8f938448d8b040d9",
-          applyStuId: "201441404409",
-          applyName: "普通用户",
-          applyPosition: { lng: 114.02597366, lat: 22.54605355 },
-          applyTime: "2018-4-11 16:34:8",
-          maintainId: null,
-          maintainStuId: null,
-          maintainName: null,
-          maintainPosition: null,
-          maintainTime: null,
-          completeTime: null,
-          serviceStar: null,
-          status: -1,
-          questionTitle: "重装系统",
-          questionDes: "重装系统重装系统重装系统重装系统",
-          questionImg:
-            "http://localhost:3000/public/images/record/201441404409/ApplyImg1523435647093.jpg"
-        }
+        // {
+        //   _id: "5acdc8806e3cfd49541e6307",
+        //   applyId: "5acd916f8f938448d8b040d9",
+        //   applyStuId: "201441404409",
+        //   applyName: "普通用户",
+        //   applyPosition: { lng: 114.02597366, lat: 22.54605355 },
+        //   applyTime: "2018-4-11 16:34:8",
+        //   maintainId: null,
+        //   maintainStuId: null,
+        //   maintainName: null,
+        //   maintainPosition: null,
+        //   maintainTime: null,
+        //   completeTime: null,
+        //   serviceStar: null,
+        //   status: -1,
+        //   questionTitle: "重装系统",
+        //   questionDes: "重装系统重装系统重装系统重装系统",
+        //   questionImg:
+        //     "http://localhost:3000/public/images/record/201441404409/ApplyImg1523435647093.jpg"
+        // }
       ],
       showtable: false,
       applyDisabled: false,
-      bmWalkingShow: true
+      bmWalkingShow: true,
+      showImg: false,
+      mapShow: false
     };
   },
   components: {
-    ApplyMarker,
-    RepairMarker,
-    BMapComponent
+    // ApplyMarker,
+    // RepairMarker,
+    BMapComponent,
+    MainRouteComponent
   },
   methods: {
-    handler({ BMap, map }) {
-      var that = this;
-      var geolocation = new BMap.Geolocation();
-      geolocation.getCurrentPosition(
-        function(r) {
-          if (this.getStatus() == BMAP_STATUS_SUCCESS) {
-            var mk = new BMap.Marker(r.point);
-            that.markerPoint = {
-              lng: r.point.lng,
-              lat: r.point.lat
-            };
-            console.log("markerPoint: ", that.markerPoint);
-            map.addOverlay(mk);
-            var point = new BMap.Point(r.point.lng, r.point.lat);
-            map.centerAndZoom(r.point, 18);
-            // mk.setAnimation(BMAP_ANIMATION_BOUNCE);
-          } else {
-            alert("failed" + this.getStatus());
-          }
-        },
-        { enableHighAccuracy: true }
-      );
-      //   //关于状态码
-      //   //BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
-      //   //BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
-      //   //BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
-      //   //BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
-      //   //BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
-      //   //BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
-      //   //BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
-      //   //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
-      //   //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
-    },
+    // handler({ BMap, map }) {
+    //   var that = this;
+    //   var geolocation = new BMap.Geolocation();
+    //   geolocation.getCurrentPosition(
+    //     function(r) {
+    //       if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+    //         var mk = new BMap.Marker(r.point);
+    //         that.markerPoint = {
+    //           lng: r.point.lng,
+    //           lat: r.point.lat
+    //         };
+    //         console.log("markerPoint: ", that.markerPoint);
+    //         map.addOverlay(mk);
+    //         var point = new BMap.Point(r.point.lng, r.point.lat);
+    //         map.centerAndZoom(r.point, 18);
+    //         // mk.setAnimation(BMAP_ANIMATION_BOUNCE);
+    //       } else {
+    //         alert("failed" + this.getStatus());
+    //       }
+    //     },
+    //     { enableHighAccuracy: true }
+    //   );
+    //   //   //关于状态码
+    //   //   //BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
+    //   //   //BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
+    //   //   //BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
+    //   //   //BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
+    //   //   //BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
+    //   //   //BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
+    //   //   //BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
+    //   //   //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
+    //   //   //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
+    // },
     handleRemove(file, fileList) {
       console.log(file, fileList);
       this.form.images = null;
@@ -221,7 +230,15 @@ export default {
                 that.$alert(res.data.msg, "报修提示", {
                   confirmButtonText: "确定",
                   callback: function() {
+                    that.form = {
+                      theme: "",
+                      content: "",
+                      images: null,
+                      tmpImages: null
+                    };
                     that.applyList = false;
+                    Bus.$emit("getStatus");
+                    that.getApplyList();
                   }
                 });
               } else {
@@ -262,13 +279,30 @@ export default {
         .then(function(res) {
           if (res.data.status == 1) {
             console.log("testres: ", res);
-            if (res.data.result == null) {
+            if (res.data.result.length == 0) {
               //可以申请报修
               that.applyDisabled = false;
+              that.showImg = false;
             } else {
               //不可以申请报修
-              that.applyDisabled = true;
-              that.showtable = true;
+
+              if (res.data.result[0].status == 0) {
+                that.applyDisabled = true;
+                that.showtable = true;
+                that.$alert("等待接单", "提示", {
+                  confirmButtonText: "确定"
+                });
+              }
+                that.applyDisabled = true;
+                that.showtable = true;
+              // if (res.data.result.repairUser) {
+              //   that.showImg = true;
+              // } else {
+              //   that.showImg = false;
+              // }
+              if(res.data.result[0].repairUser){
+                that.maintainPoint = res.data.result[0].repairUser.repairPosition
+              }
             }
           } else {
             that.$alert(res.data.msg, "提示", {
@@ -280,18 +314,10 @@ export default {
         .catch(function(err) {
           console.log("err: ", err);
         });
-    },
-    //标注完成
-    markersset() {
-      console.log("标注完成");
-    },
-    draw({ el, BMap, map }) {
-      const pixel = map.pointToOverlayPixel(
-        new BMap.Point(114.02597366, 22.54605355)
-      );
-    },
+    }
   },
   mounted() {
+    this.getApplyList();
   }
 };
 </script>

@@ -18,7 +18,8 @@
             <h2>{{roleName}}</h2>
             <el-menu :default-active="activeIndex" class="el-menu-demo" background-color="#DADADA" text-color="#41C0A3" active-text-color="#41C0A3" mode="horizontal" @select="handleSelect">
                 <el-menu-item index="1">个人信息</el-menu-item>
-                <el-menu-item index="2">报修详情</el-menu-item>
+                <el-menu-item index="2" v-if="showApply">报修详情</el-menu-item>
+                <el-menu-item index="2" v-else>维修详情</el-menu-item>
             </el-menu>
             <el-form v-if="tabshow" class="changeForm" ref="changeForm" :rules="rules" size="medium" label-position="right" :model="changeForm" label-width="80px">
                 <!-- 不可以修改的：学号，性别，姓名，用户类型，身份证照片，学生证照片； -->
@@ -65,10 +66,49 @@
                 </el-form-item>
 
             </el-form>
-            <ul v-else>
-                <li>1</li>
-                <li>2</li>
-            </ul>
+            <div v-else>
+                <el-table :data="applyHistory" style="width: 100%" v-if="applyHistoryShow">
+                  <el-table-column type="expand">
+                    <template slot-scope="props">
+                      <el-form label-position="left" inline class="demo-table-expand">
+                        <el-form-item label="商品名称">
+                          <span>{{ props.row.name }}</span>
+                        </el-form-item>
+                        <el-form-item label="所属店铺">
+                          <span>{{ props.row.shop }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品 ID">
+                          <span>{{ props.row.id }}</span>
+                        </el-form-item>
+                        <el-form-item label="店铺 ID">
+                          <span>{{ props.row.shopId }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品分类">
+                          <span>{{ props.row.category }}</span>
+                        </el-form-item>
+                        <el-form-item label="店铺地址">
+                          <span>{{ props.row.address }}</span>
+                        </el-form-item>
+                        <el-form-item label="商品描述">
+                          <span>{{ props.row.desc }}</span>
+                        </el-form-item>
+                      </el-form>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="序号" type="index" :index="getIndex" align="center"
+                    prop="id">
+                  </el-table-column>
+                  <el-table-column
+                    label="商品名称"
+                    prop="name">
+                  </el-table-column>
+                  <el-table-column
+                    label="描述"
+                    prop="desc">
+                  </el-table-column>
+                </el-table>
+            </div>
         </main>
         <el-dialog
           title="上传头像"
@@ -138,7 +178,11 @@ export default {
         stuId: common.getCookie("stuId")
       },
       userimg: "",
-      defaultImg: true
+      defaultImg: true,
+      showApply: common.getCookie("roleId") == 2 ? true : false,
+      applyHistory: [],
+      repairHistory: [],
+      applyHistoryShow: true
     };
   },
   methods: {
@@ -167,7 +211,7 @@ export default {
           } else if (res.data.status == 1) {
             that.changeForm = res.data.result;
             that.userimg = res.data.result.userImg;
-            if(that.userimg != null){
+            if (that.userimg != null) {
               that.defaultImg = false;
             }
           }
@@ -184,6 +228,11 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
       this.tabshow = !this.tabshow;
+      if (common.getCookie("roleId") == 2) {
+        this.applyHistoryShow = true;
+      } else {
+        this.applyHistoryShow = false;
+      }
     },
     submitForm(formName) {
       var that = this;
@@ -310,10 +359,41 @@ export default {
         this.userimg = response.result.imgUrl;
         this.defaultImg = false;
       }
+    },
+    //获取报修维修详情
+    getList() {
+      var that = this;
+      var roleId = common.getCookie("roleId");
+      var stuId = common.getCookie("stuId");
+      if (roleId == 2) {
+        //如果是报修用户，发送applyStuId过去，除了status=-2其他返回
+        this.$http
+          .get("/api/record/getApplyHistory", {
+            params: { stuId: stuId }
+          })
+          .then(function(res) {
+            if (res.data.status == 1) {
+              that.applyHistory = res.data.result;
+            } else {
+              that.$alert(res.data.msg, "提示", {
+                confirmButtonText: "确定"
+              });
+            }
+          })
+          .catch(function(err) {
+            console.log("err: ", err);
+          });
+      } else if (roleId == 1) {
+        //如果是维修用户，发送repaStuId过去，status=0||1返回
+      }
+    },
+    getIndex(index) {
+      return index + 1;
     }
   },
   beforeMount() {
     this.getInformation();
+    this.getList();
   }
 };
 </script>
@@ -423,7 +503,7 @@ h2 {
   position: relative;
   top: -10px;
   background-repeat: no-repeat;
-  background-size: contain; 
+  background-size: contain;
   background-position: center center;
 }
 </style>

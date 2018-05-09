@@ -1,18 +1,19 @@
 <template>
   <!--地图容器-->
-  <div id="allmap" class="allmap"></div>
+  <div id="routemap" class="routemap"></div>
 </template>
 <script>
 import common from "../assets/js/common";
 import userimg from "../assets/img/computer.png";
+import mainimg from "../assets/img/settings.png";
 export default {
   name: "",
   data() {
     return {
-      userimg: ""
+      userimg: "",
+      mainimg: "",
     };
   },
-  props: ["showImg"],
   methods: {
     getUserImg() {
       var that = this;
@@ -42,7 +43,7 @@ export default {
       console.log("ShowMap: ", BMap);
       // 百度地图API功能
       console.log("outMap： ", BMap);
-      var map = new BMap.Map("allmap");
+      var map = new BMap.Map("routemap");
       var point = new BMap.Point();
       map.centerAndZoom(point, 18);
 
@@ -85,8 +86,6 @@ export default {
     }
   },
   mounted() {
-    var that = this;
-    this.getUserImg();
   }
 };
 </script>

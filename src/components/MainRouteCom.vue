@@ -1,18 +1,20 @@
 <template>
   <!--地图容器-->
-  <div id="allmap" class="allmap"></div>
+  <div id="mainroutemap" class="mainroutemap"></div>
 </template>
 <script>
 import common from "../assets/js/common";
 import userimg from "../assets/img/computer.png";
+import mainimg from "../assets/img/settings.png";
 export default {
   name: "",
   data() {
     return {
-      userimg: ""
+      userimg: "",
+      mainimg: ""
     };
   },
-  props: ["showImg"],
+  props: ["applyPosition", "repairPosition"],
   methods: {
     getUserImg() {
       var that = this;
@@ -42,7 +44,7 @@ export default {
       console.log("ShowMap: ", BMap);
       // 百度地图API功能
       console.log("outMap： ", BMap);
-      var map = new BMap.Map("allmap");
+      var map = new BMap.Map("mainroutemap");
       var point = new BMap.Point();
       map.centerAndZoom(point, 18);
 
@@ -59,8 +61,8 @@ export default {
             if (that.$props.showImg) {
               var myIcon = new BMap.Icon(userimg, new BMap.Size(64, 64));
               var mk = new BMap.Marker(r.point, { icon: myIcon });
-            }else{
-              var mk = new BMap.Marker(r.point);              
+            } else {
+              var mk = new BMap.Marker(r.point);
             }
 
             map.addOverlay(mk);
@@ -72,21 +74,39 @@ export default {
         },
         { enableHighAccuracy: true }
       );
-      //关于状态码
-      //BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
-      //BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
-      //BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
-      //BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
-      //BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
-      //BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
-      //BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
-      //BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
-      //BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
     }
   },
   mounted() {
-    var that = this;
-    this.getUserImg();
+    // 百度地图API功能
+    var map = new BMap.Map("mainroutemap");
+    map.centerAndZoom(
+      new BMap.Point(
+        this.$props.applyPosition.lng,
+        this.$props.applyPosition.lat
+      ),
+      11
+    );
+    var walking = new BMap.WalkingRoute(map, {
+      renderOptions: { map: map, autoViewport: true }
+    });
+    var pointA = new BMap.Point(
+      this.$props.applyPosition.lng,
+      this.$props.applyPosition.lat
+    );
+    var pointB = new BMap.Point(
+      this.$props.repairPosition.lng,
+      this.$props.repairPosition.lat
+    );
+    walking.search(pointA, pointB);
+    var starIcon = new BMap.Icon(userimg, new BMap.Size(64, 64));
+    var endIcon = new BMap.Icon(mainimg, new BMap.Size(64, 64));
+    var distance = map.getDistance(pointA, pointB).toFixed(2);
+    walking.setMarkersSetCallback(function(result) {
+      result[0].marker.setIcon(starIcon);
+      result[0].marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+      result[1].marker.setIcon(endIcon);
+      result[1].marker.setAnimation(BMAP_ANIMATION_BOUNCE);
+    });
   }
 };
 </script>

@@ -10,9 +10,9 @@
         <i class="el-icon-location"></i>
         <span v-text="city"></span>
       </div>
-      <div class="commenting" :is-dot="hasCommenting">
+      <div class="commenting" >
          <router-link :to="{name: 'commenting'}" tag="div">  
-          <el-badge is-dot class="item">
+          <el-badge :is-dot="hasCommenting" class="item">
            <icon  name="bell"></icon>  
           </el-badge>       
          </router-link>
@@ -34,6 +34,7 @@
 
 <script>
 import common from "../assets/js/common.js";
+import Bus from "../assets/js/bus"
 export default {
   name: "index",
   data() {
@@ -64,14 +65,14 @@ export default {
             that.showLocation = true;
           });
           var stuId = common.getCookie("stuId");
-          // that.$http.post('/api/user/position',{
-          //   stuId: stuId,
-          //   position: point
-          // }).then(function(res){
-          //   console.log(res);
-          // }).catch(function(err){
-          //   console.log(err);
-          // })
+          that.$http.post('/api/user/position',{
+            stuId: stuId,
+            position: point
+          }).then(function(res){
+            console.log(res);
+          }).catch(function(err){
+            console.log(err);
+          })
         } else {
           console.log("failed " + this.getStatus());
           that.$alert("定位失败，请检查是否打开GPS定位", "定位提示", {
@@ -81,14 +82,34 @@ export default {
       });
     },
     getCommenting(){
-      if(common.getCookie("stuId")){
-        var stuId = common.getCookie("stuId");
-        
-      }
+      var that = this;
+      this.$http
+        .post("/api/record/getlist", {
+          applyStuId: common.getCookie("stuId")
+        })
+        .then(function(res) {
+          if (res.data.status == 1) {
+            console.log("testres: ", res);
+            if (res.data.result.length == 0) {
+              that.hasCommenting = false;
+            } else {
+              that.hasCommenting = true;
+            }
+          } else {
+            that.$alert(res.data.msg, "提示", {
+              confirmButtonText: "确定",
+              callback: function() {}
+            });
+          }
+        })
+        .catch(function(err) {
+          console.log("err: ", err);
+        });
     }
   },
   mounted() {
     this.getBMapLocation();
+    this.getCommenting();
   },
   updated() {
     console.log("router: ", this.$route.path);
@@ -150,6 +171,11 @@ export default {
         name: "login"
       });
     }
+
+    var that = this;
+    Bus.$on("getStatus",function(){
+      that.hasCommenting = true;
+    })
 
     // this.getBMapLocation();
   }
